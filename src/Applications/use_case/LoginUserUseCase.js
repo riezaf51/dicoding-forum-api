@@ -1,5 +1,6 @@
 const UserLogin = require('../../Domains/users/entities/UserLogin');
 const NewAuthentication = require('../../Domains/authentications/entities/NewAuth');
+const Jwt = require('@hapi/jwt');
 
 class LoginUserUseCase {
   constructor({
