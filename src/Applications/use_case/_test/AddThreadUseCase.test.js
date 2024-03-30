@@ -1,5 +1,6 @@
 const AddThreadUseCase = require('../AddThreadUseCase');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
+const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 
 describe('AddThreadUseCase', () => {
@@ -9,13 +10,11 @@ describe('AddThreadUseCase', () => {
       title: 'thread title',
       body: 'thread body',
     };
-
-    const mockAddedThread = {
+    const mockAddedThread = new AddedThread({
       id: 'thread-123',
       title: useCasePayload.title,
       owner: 'user-123',
-    };
-
+    });
     const mockThreadRepository = new ThreadRepository();
 
     // Mocking
@@ -27,9 +26,14 @@ describe('AddThreadUseCase', () => {
     });
 
     // Action
-    await addThreadUseCase.execute('user-123', useCasePayload);
+    const addThread = await addThreadUseCase.execute('user-123', useCasePayload);
 
     // Assert
+    expect(addThread).toStrictEqual(new AddedThread({
+      id: 'thread-123',
+      title: useCasePayload.title,
+      owner: 'user-123',
+    }));
     expect(mockThreadRepository.addThread).toHaveBeenCalledWith('user-123', new NewThread(useCasePayload));
   });
 });

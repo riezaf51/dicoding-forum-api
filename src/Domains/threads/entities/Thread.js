@@ -19,16 +19,14 @@ class Thread {
     this.comments = comments;
   }
 
-  _verifyPayload(payload) {
-    const {
-      id,
-      title,
-      body,
-      date,
-      username,
-      comments,
-    } = payload;
-
+  _verifyPayload({
+    id,
+    title,
+    body,
+    date,
+    username,
+    comments,
+  }) {
     if (!id || !title || !body || !date || !username || !comments) {
       throw new Error('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     }
