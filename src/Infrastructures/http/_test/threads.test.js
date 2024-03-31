@@ -2,6 +2,7 @@ const pool = require('../../database/postgres/pool');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
 
@@ -14,6 +15,7 @@ describe('/threads endpoint', () => {
     await AuthenticationsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
+    await CommentsTableTestHelper.cleanTable();
   });
 
   describe('when POST /threads', () => {
@@ -128,5 +130,85 @@ describe('/threads endpoint', () => {
     });
   });
 
-  // TO-DO: Thread Detail Test Cases
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and return thread detail', async () => {
+      // Arrange
+      const requestPayload = {
+        title: 'thread title',
+        body: 'thread body',
+      };
+      const server = await createServer(container);
+
+      // Create User & GET JWT Access Token
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: {
+          username: 'dicoding',
+          password: 'secret',
+          fullname: 'Dicoding Indonesia',
+        },
+      });
+
+      const loginResponse = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: {
+          username: 'dicoding',
+          password: 'secret',
+        },
+      });
+
+      const loginResponseJson = JSON.parse(loginResponse.payload);
+      const { accessToken } = loginResponseJson.data;
+
+      // Create Thread
+      const threadResponse = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      const threadResponseJson = JSON.parse(threadResponse.payload);
+      const { addedThread } = threadResponseJson.data;
+
+      // Create Comment
+      await server.inject({
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments`,
+        payload: {
+          content: 'comment content',
+        },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${addedThread.id}`,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.thread).toBeDefined();
+      expect(responseJson.data.thread.comments).toHaveLength(1);
+    });
+
+    it('should response 404 when thread not found', async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: '/threads/thread-123',
+      });
+
+      // Assert
+      expect(response.statusCode).toEqual(404);
+    });
+  });
 });

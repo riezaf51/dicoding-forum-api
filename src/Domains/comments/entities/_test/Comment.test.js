@@ -19,6 +19,7 @@ describe('Comment entities', () => {
       id: 123,
       username: 'dicoding',
       date: '2021-08-08T07:22:33.555Z',
+      replies: {},
       content: true,
       isDelete: 'true',
     };
@@ -33,6 +34,7 @@ describe('Comment entities', () => {
       id: 'comment-123',
       username: 'dicoding',
       date: '2021-08-08T07:22:33.555Z',
+      replies: [],
       content: 'comment',
       isDelete: false,
     };
@@ -45,6 +47,7 @@ describe('Comment entities', () => {
     expect(comment.id).toEqual(payload.id);
     expect(comment.username).toEqual(payload.username);
     expect(comment.date).toEqual(payload.date);
+    expect(comment.replies).toEqual(payload.replies);
     expect(comment.content).toEqual(payload.content);
   });
 
@@ -54,6 +57,7 @@ describe('Comment entities', () => {
       id: 'comment-123',
       username: 'dicoding',
       date: '2021-08-08T07:22:33.555Z',
+      replies: [],
       content: 'comment',
       isDelete: true,
     };
@@ -66,6 +70,7 @@ describe('Comment entities', () => {
     expect(comment.id).toEqual(payload.id);
     expect(comment.username).toEqual(payload.username);
     expect(comment.date).toEqual(payload.date);
+    expect(comment.replies).toEqual(payload.replies);
     expect(comment.content).toEqual('**komentar telah dihapus**');
   });
 });

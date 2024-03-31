@@ -189,6 +189,7 @@ describe('CommentRepositoryPostgres', () => {
         id: 'comment-123',
         username: 'dicoding',
         date: '2021-08-08T07:22:58.383Z',
+        replies: [],
         content: 'sebuah comment',
         isDelete: false,
       }));

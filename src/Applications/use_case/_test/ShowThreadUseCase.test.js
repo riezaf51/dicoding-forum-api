@@ -1,6 +1,7 @@
 const ShowThreadUseCase = require('../ShowThreadUseCase');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 
 describe('ShowThreadUseCase', () => {
   it('should throw error if use case payload not contain needed property', async () => {
@@ -45,8 +46,15 @@ describe('ShowThreadUseCase', () => {
       date: '2021-08-08T07:59:18.077Z',
       content: 'Super Comment',
     }];
+    const mockReplies = [{
+      id: 'reply-123',
+      content: 'Super Reply',
+      date: '2021-08-08T07:59:18.077Z',
+      username: 'dicoding',
+    }];
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
 
     // Mocking
     mockThreadRepository.isThreadExist = jest.fn()
@@ -55,11 +63,14 @@ describe('ShowThreadUseCase', () => {
       .mockImplementation(() => Promise.resolve(mockThread));
     mockCommentRepository.getCommentsByThreadId = jest.fn()
       .mockImplementation(() => Promise.resolve(mockComments));
+    mockReplyRepository.getRepliesByCommentId = jest.fn()
+      .mockImplementation(() => Promise.resolve(mockReplies));
 
     // Creating use case instance
     const showThreadUseCase = new ShowThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
     });
 
     // Action
@@ -74,11 +85,14 @@ describe('ShowThreadUseCase', () => {
       username: mockThread.username,
       comments: mockComments,
     });
+    expect(thread.comments[0].replies).toStrictEqual(mockReplies);
     expect(mockThreadRepository.isThreadExist)
       .toHaveBeenCalledWith(useCasePayload.threadId);
     expect(mockThreadRepository.getThreadById)
       .toHaveBeenCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.getCommentsByThreadId)
       .toHaveBeenCalledWith(useCasePayload.threadId);
+    expect(mockReplyRepository.getRepliesByCommentId)
+      .toHaveBeenCalledWith(mockComments[0].id);
   });
 });
