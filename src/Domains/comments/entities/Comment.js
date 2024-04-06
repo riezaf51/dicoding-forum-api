@@ -8,6 +8,7 @@ class Commment {
       date,
       replies,
       content,
+      likeCount,
       isDelete,
     } = payload;
 
@@ -15,6 +16,7 @@ class Commment {
     this.username = username;
     this.date = date;
     this.replies = replies;
+    this.likeCount = likeCount;
     this.content = !isDelete ? content : '**komentar telah dihapus**';
   }
 
@@ -24,13 +26,15 @@ class Commment {
     date,
     replies,
     content,
+    likeCount,
     isDelete,
   }) {
-    if (!id || !username || !date || !replies || !content || isDelete === undefined) {
+    if (!id || !username || !date || !replies || !content
+      || likeCount === undefined || isDelete === undefined) {
       throw new Error('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
-    if (typeof id !== 'string' || typeof username !== 'string' || typeof date !== 'string' || !Array.isArray(replies) || typeof content !== 'string' || typeof isDelete !== 'boolean') {
+    if (typeof id !== 'string' || typeof username !== 'string' || typeof date !== 'string' || !Array.isArray(replies) || typeof content !== 'string' || typeof likeCount !== 'number' || typeof isDelete !== 'boolean') {
       throw new Error('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }

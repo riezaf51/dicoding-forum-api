@@ -21,6 +21,7 @@ describe('Comment entities', () => {
       date: '2021-08-08T07:22:33.555Z',
       replies: {},
       content: true,
+      likeCount: '1',
       isDelete: 'true',
     };
 
@@ -36,6 +37,7 @@ describe('Comment entities', () => {
       date: '2021-08-08T07:22:33.555Z',
       replies: [],
       content: 'comment',
+      likeCount: 0,
       isDelete: false,
     };
 
@@ -48,6 +50,7 @@ describe('Comment entities', () => {
     expect(comment.username).toEqual(payload.username);
     expect(comment.date).toEqual(payload.date);
     expect(comment.replies).toEqual(payload.replies);
+    expect(comment.likeCount).toEqual(payload.likeCount);
     expect(comment.content).toEqual(payload.content);
   });
 
@@ -59,6 +62,7 @@ describe('Comment entities', () => {
       date: '2021-08-08T07:22:33.555Z',
       replies: [],
       content: 'comment',
+      likeCount: 0,
       isDelete: true,
     };
 
@@ -72,5 +76,6 @@ describe('Comment entities', () => {
     expect(comment.date).toEqual(payload.date);
     expect(comment.replies).toEqual(payload.replies);
     expect(comment.content).toEqual('**komentar telah dihapus**');
+    expect(comment.likeCount).toEqual(payload.likeCount);
   });
 });
