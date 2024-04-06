@@ -5,6 +5,7 @@ const Reply = require('../../../Domains/replies/entities/Reply');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
+const LikeRepository = require('../../../Domains/likes/LikeRepository');
 
 describe('ShowThreadUseCase', () => {
   it('should throw error if use case payload not contain needed property', async () => {
@@ -49,6 +50,7 @@ describe('ShowThreadUseCase', () => {
       username: 'dicoding',
       date: '2021-08-08T07:59:18.077Z',
       content: 'Super Comment',
+      likeCount: 0,
       isDelete: false,
       replies: [],
     })];
@@ -63,6 +65,7 @@ describe('ShowThreadUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
     const mockReplyRepository = new ReplyRepository();
+    const mockLikeRepository = new LikeRepository();
 
     // Mocking
     mockThreadRepository.isThreadExist = jest.fn()
@@ -73,12 +76,15 @@ describe('ShowThreadUseCase', () => {
       .mockImplementation(() => Promise.resolve(mockComments));
     mockReplyRepository.getRepliesByCommentId = jest.fn()
       .mockImplementation(() => Promise.resolve(mockReplies));
+    mockLikeRepository.getLikeCount = jest.fn()
+      .mockImplementation(() => Promise.resolve(0));
 
     // Creating use case instance
     const showThreadUseCase = new ShowThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
       replyRepository: mockReplyRepository,
+      likeRepository: mockLikeRepository,
     });
 
     // Action
@@ -96,6 +102,7 @@ describe('ShowThreadUseCase', () => {
         username: 'dicoding',
         date: '2021-08-08T07:59:18.077Z',
         content: 'Super Comment',
+        likeCount: 0,
         isDelete: false,
         replies: [
           new Reply({
@@ -115,6 +122,8 @@ describe('ShowThreadUseCase', () => {
     expect(mockCommentRepository.getCommentsByThreadId)
       .toHaveBeenCalledWith(useCasePayload.threadId);
     expect(mockReplyRepository.getRepliesByCommentId)
+      .toHaveBeenCalledWith(mockComments[0].id);
+    expect(mockLikeRepository.getLikeCount)
       .toHaveBeenCalledWith(mockComments[0].id);
   });
 });

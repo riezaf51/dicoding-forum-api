@@ -191,6 +191,7 @@ describe('CommentRepositoryPostgres', () => {
         date: '2021-08-08T07:22:58.383Z',
         replies: [],
         content: 'sebuah comment',
+        likeCount: 0,
         isDelete: false,
       }));
     });

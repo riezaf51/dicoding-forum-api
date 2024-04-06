@@ -1,12 +1,12 @@
-const NewLike = require('../NewLike');
+const Like = require('../Like');
 
-describe('a NewLike entities', () => {
+describe('a Like entities', () => {
   it('should throw error if payload did not contain needed property', () => {
     // Arrange
     const payload = {};
 
     // Action & Assert
-    expect(() => new NewLike(payload)).toThrowError('NEW_LIKE.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new Like(payload)).toThrowError('LIKE.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error if payload did not meet data type specification', () => {
@@ -17,10 +17,10 @@ describe('a NewLike entities', () => {
     };
 
     // Action & Assert
-    expect(() => new NewLike(payload)).toThrowError('NEW_LIKE.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new Like(payload)).toThrowError('LIKE.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
-  it('should create newLike object correctly', () => {
+  it('should create like object correctly', () => {
     // Arrange
     const payload = {
       threadId: 'thread-123',
@@ -28,10 +28,10 @@ describe('a NewLike entities', () => {
     };
 
     // Action
-    const newLike = new NewLike(payload);
+    const like = new Like(payload);
 
     // Assert
-    expect(newLike.threadId).toEqual(payload.threadId);
-    expect(newLike.commentId).toEqual(payload.commentId);
+    expect(like.threadId).toEqual(payload.threadId);
+    expect(like.commentId).toEqual(payload.commentId);
   });
 });
